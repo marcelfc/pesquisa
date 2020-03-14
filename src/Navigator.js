@@ -2,6 +2,7 @@ import React from 'react'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createDrawerNavigator } from 'react-navigation-drawer'
 import Home from './screens/Home'
+import Pesquisa from './screens/Pesquisa'
 import Menu from './screens/Menu'
 
 const menuConfig = {
@@ -25,6 +26,13 @@ const menuRoutes = {
         screen: props => <Home {...props} />,
         navigationOptions: {
             title: 'Home'
+        }
+    },
+    Pesquisa: {
+        name: 'Pesquisa',
+        screen: props => <Pesquisa {...props} />,
+        navigationOptions: {
+            title: 'Nova Pesquisa'
         }
     },
 }
