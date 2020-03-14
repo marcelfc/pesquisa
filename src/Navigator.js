@@ -3,7 +3,10 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createDrawerNavigator } from 'react-navigation-drawer'
 import Home from './screens/Home'
 import Pesquisa from './screens/Pesquisa'
+import Voto from './screens/Voto'
+import Confirmacao from './screens/Confirmacao'
 import Menu from './screens/Menu'
+import { Root } from "native-base";
 
 const menuConfig = {
     initialRouteName: 'Home',
@@ -14,7 +17,7 @@ const menuConfig = {
             fontSize: 20
         },
         activeLabelStyle: {
-            color: '#080',
+            color: '#4682B4',
             fontWeight: 'bold',
         }
     }
@@ -33,6 +36,20 @@ const menuRoutes = {
         screen: props => <Pesquisa {...props} />,
         navigationOptions: {
             title: 'Nova Pesquisa'
+        }
+    },
+    Voto: {
+        name: 'Voto',
+        screen: props => <Root><Voto {...props} /></Root>,
+        navigationOptions: {
+            drawerLabel: () => null
+        }
+    },
+    Confirmacao: {
+        name: 'Confirmacao',
+        screen: props => <Root><Confirmacao {...props} /></Root>,
+        navigationOptions: {
+            drawerLabel: () => null
         }
     },
 }

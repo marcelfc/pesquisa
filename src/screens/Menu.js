@@ -1,26 +1,32 @@
 import React from 'react'
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
+import { ScrollView, View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { DrawerItems } from 'react-navigation-drawer'
+import {
+    Container, Content, Text, Icon
+} from "native-base";
 
-
-// import Icon from 'react-native-vector-icons/FontAwesome'
-// import logoImage from "../../assets/imgs/logo.png";
-// import transsolImage from "../../assets/imgs/transsol.png";
+import bgImage from "../../assets/bg.png";
 
 export default props => {
 
-    const logout = () => {
-        // delete axios.defaults.headers.common['Authorization']
-        // AsyncStorage.removeItem('userData')
-        // AsyncStorage.removeItem('linhaBusState')
-        // AsyncStorage.removeItem('linhaBusTripState')
-        // props.navigation.navigate('AuthOrApp')
-    }
+    const logout = () => { }
 
     return (
-        <ScrollView>
-            <DrawerItems {...props} />
-        </ScrollView>
+        <Container>
+            <Content padder>
+                <Image
+                    source={bgImage}
+                    style={{
+                        height: 120,
+                    }} />
+                <DrawerItems {...props} />
+                <View style={{ position: 'absolute', top: 50, left: 50, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+                    <Icon name="search" style={{color: 'white'}}/>
+                    <Text style={{color: 'white', fontSize: 22, fontStyle: 'italic', marginLeft: 10}}>Pesquisas</Text>
+                </View>
+            </Content>
+        </Container>
+
     )
 }
 

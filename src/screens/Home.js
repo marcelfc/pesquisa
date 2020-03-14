@@ -1,5 +1,5 @@
 import React from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, View } from "react-native";
 import { Container, Header, Title, Left, Icon, Right, Button, Body, Content, Text, Card, CardItem, ListItem, Badge } from "native-base";
 export default class HomeScreen extends React.Component {
     render() {
@@ -52,7 +52,7 @@ export default class HomeScreen extends React.Component {
                                         <Icon active name="ios-open" />
                                     </Right>
                                 </ListItem>
-                                <ListItem icon style={{ width: '100%' }}>
+                                <ListItem icon style={{ width: '100%' }} onPress={() => this.props.navigation.navigate("Voto", {pesquisa: 'Quem deve ser o prefeito de banabuiú ?', items: [{id: 1, item: 'Edinho Nobre'}, {id: 2, item: 'Veridiano Sales'}]})}>
                                     <Left>
                                         <Badge primary>
                                             <Text>2</Text>
@@ -62,8 +62,10 @@ export default class HomeScreen extends React.Component {
                                         <Text>pesquisa tal sobre tal coisa</Text>
                                     </Body>
                                     <Right>
-                                        <Text>Votar</Text>
-                                        <Icon active name="ios-open" />
+                                        <View  style={{flexDirection: 'row'}}>
+                                            <Text>Votar</Text>
+                                            <Icon active name="ios-open" />
+                                        </View>
                                     </Right>
                                 </ListItem>
                                 <ListItem icon style={{ width: '100%' }}>
@@ -83,7 +85,7 @@ export default class HomeScreen extends React.Component {
                             </Body>
                         </CardItem>
                         <CardItem footer button bordered onPress={() => alert("This is Card Body")}>
-                            <Text>Buscar mais pesquisas</Text>
+                            <Text>Ver mais</Text>
                             <Icon style={{ marginLeft: 10, color: "#0000CD" }} name="ios-arrow-round-forward" />
                         </CardItem>
                     </Card>
