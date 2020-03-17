@@ -1,7 +1,9 @@
 import React from "react";
 import { StatusBar, View } from "react-native";
 import { Container, Header, Title, Left, Icon, Right, Button, Body, Content, Text, Card, CardItem, ListItem, Badge } from "native-base";
+import FBLoginButton from "../components/FBLoginButton";
 export default class HomeScreen extends React.Component {
+
     render() {
         return (
             <Container>
@@ -31,6 +33,7 @@ export default class HomeScreen extends React.Component {
                         onPress={() => this.props.navigation.navigate("Pesquisa")}>
                         <Text>Nova Pesquisa</Text>
                     </Button>
+                    <FBLoginButton />
                     <Card style={{ marginTop: 10 }}>
                         <CardItem header bordered>
                             <Icon name="md-trophy" style={{ color: '#FFD700' }} />
@@ -52,7 +55,7 @@ export default class HomeScreen extends React.Component {
                                         <Icon active name="ios-open" />
                                     </Right>
                                 </ListItem>
-                                <ListItem icon style={{ width: '100%' }} onPress={() => this.props.navigation.navigate("Voto", {pesquisa: 'Quem deve ser o prefeito de banabuiú ?', items: [{id: 1, item: 'Edinho Nobre'}, {id: 2, item: 'Veridiano Sales'}]})}>
+                                <ListItem icon style={{ width: '100%' }} onPress={() => this.props.navigation.navigate("Voto", { pesquisa: 'Quem deve ser o prefeito de banabuiú ?', items: [{ id: 1, item: 'Edinho Nobre' }, { id: 2, item: 'Veridiano Sales' }] })}>
                                     <Left>
                                         <Badge primary>
                                             <Text>2</Text>
@@ -62,7 +65,7 @@ export default class HomeScreen extends React.Component {
                                         <Text>pesquisa tal sobre tal coisa</Text>
                                     </Body>
                                     <Right>
-                                        <View  style={{flexDirection: 'row'}}>
+                                        <View style={{ flexDirection: 'row' }}>
                                             <Text>Votar</Text>
                                             <Icon active name="ios-open" />
                                         </View>
