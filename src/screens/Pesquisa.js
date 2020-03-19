@@ -5,9 +5,11 @@ import {
     Icon, Right, Button, Body, Content,
     Text, Card, CardItem, Form,
     Item, Label, Input, Picker, Textarea,
-    CheckBox, ListItem
+    CheckBox, ListItem, Toast
 
 } from "native-base";
+import AsyncStorage from "@react-native-community/async-storage";
+import ModalLogin from "./ModalLogin";
 export default class PesquisaScreen extends React.Component {
 
     constructor(props) {
@@ -18,8 +20,15 @@ export default class PesquisaScreen extends React.Component {
                 { descricao: '' }
             ],
             titulo: '',
-            is_public: false
+            is_public: false,
+            categories: [],
+            messagesError: [],
+            showModalLogin: false
         };
+    }
+
+    componentDidMount = async () => {
+        await this.loadCategories()
     }
 
     addRowItem() {
@@ -50,7 +59,7 @@ export default class PesquisaScreen extends React.Component {
     renderItens() {
         const items = this.state.items.map((item, index) => {
             return (
-                <Item style={{ marginTop: 10 }}>
+                <Item style={{ marginTop: 10 }} key={index}>
                     <Input
                         placeholder='Escreva a opção'
                         value={item.descricao}
@@ -63,16 +72,84 @@ export default class PesquisaScreen extends React.Component {
         return items
     }
 
-    sendForm() {
-        // validar se todos os campos estão preenchidos
+    loadCategories = async () => {
+        const stringCategories = await AsyncStorage.getItem('categories')
+        const categories = JSON.parse(stringCategories) || []
+        this.setState({categories})
+    }
 
+    sendForm = async () => {
+        // validar se todos os campos estão preenchidos
+        if(this.isValid()){
+            // verificar se usuário está logado
+            const stringuserData = await AsyncStorage.getItem('userData')
+            const userData = JSON.parse(stringuserData) || null
+            if(userData == null){
+                this.setState({showModalLogin: true})
+            } else {
+                await this.sendData()
+            }
+        } else {
+            const messages = this.state.messagesError.map(item => item)
+            Toast.show({
+                text: messages.join(';'),
+                buttonText: "Ok!",
+                type: "danger",
+                duration: 8000
+              })
+              this.setState({messagesError: []})
+            return false
+        }
+        
+    }
+
+    sendData = async () => {
         console.log(this.state)
         alert('ok, enviar dados')
+    } 
+
+    isValid() {
+        if(this.state.titulo.trim() == ''){
+            const messagesError = this.state.messagesError
+            messagesError.push('Por favor, descreva sua pesquisa.')
+            this.setState({messagesError})
+            return false
+        }
+
+        if(this.state.categoria_id == null){
+            const messagesError = this.state.messagesError
+            messagesError.push('Por favor, selecione uma categoria.')
+            this.setState({messagesError})
+            return false
+        }
+
+        if(this.state.items.length == 0){
+            const messagesError = this.state.messagesError
+            messagesError.push('Por favor, descreva itens para sua pesquisa.')
+            this.setState({messagesError})
+            return false
+        }
+
+        const itemsBlank = this.state.items.filter(item => item.descricao.trim() == '')
+
+        if(itemsBlank.length > 0){
+            const messagesError = this.state.messagesError
+            messagesError.push('Por favor, descreva todos os seus items')
+            this.setState({messagesError})
+            return false
+        }
+
+        return true
     }
 
     render() {
         return (
             <Container>
+                <ModalLogin
+                    isVisible={this.state.showModalLogin}
+                    onCancel={() => this.setState({ showModalLogin: false })}
+                    textLogin="publicar sua pesquisa."
+                ></ModalLogin>
                 <Header>
                     <Left>
                         <Button
@@ -113,9 +190,14 @@ export default class PesquisaScreen extends React.Component {
                                         selectedValue={this.state.categoria_id}
                                         onValueChange={val => this.setState({categoria_id: val})}
                                     >
-                                        <Picker.Item label="Qual é a categoria ?" value="key1" />
-                                        <Picker.Item label="Política" value="key2" />
-                                        <Picker.Item label="entretenimento" value="key3" />
+                                        <Picker.Item label="Qual será a categoria ?" value={null} />
+                                        {
+                                            this.state.categories.map((item, index) => {
+                                                return (
+                                                    <Picker.Item label={item.categoria} value={item.id} key={index}/>
+                                                )
+                                            })
+                                        }
                                     </Picker>
                                 </Item>
                                 <ListItem onPress={this.updateIsPublic.bind(this)}>

@@ -2,7 +2,27 @@ import React from "react";
 import { StatusBar, View } from "react-native";
 import { Container, Header, Title, Left, Icon, Right, Button, Body, Content, Text, Card, CardItem, ListItem, Badge } from "native-base";
 import FBLoginButton from "../components/FBLoginButton";
+import { server } from "../config/common";
+import AsyncStorage from "@react-native-community/async-storage"
+import axios from "axios";
 export default class HomeScreen extends React.Component {
+
+    componentDidMount = async () => {
+        try {
+            await this.loadCategories()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    loadCategories = async () => {
+        try {
+            const res = await axios.get(`${server}/categorias`)
+            AsyncStorage.setItem('categories', JSON.stringify(res.data))
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     render() {
         return (
@@ -33,7 +53,6 @@ export default class HomeScreen extends React.Component {
                         onPress={() => this.props.navigation.navigate("Pesquisa")}>
                         <Text>Nova Pesquisa</Text>
                     </Button>
-                    <FBLoginButton />
                     <Card style={{ marginTop: 10 }}>
                         <CardItem header bordered>
                             <Icon name="md-trophy" style={{ color: '#FFD700' }} />

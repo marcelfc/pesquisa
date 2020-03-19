@@ -33,7 +33,7 @@ const menuRoutes = {
     },
     Pesquisa: {
         name: 'Pesquisa',
-        screen: props => <Pesquisa {...props} />,
+        screen: props => <Root><Pesquisa {...props} /></Root>,
         navigationOptions: {
             title: 'Nova Pesquisa'
         }
