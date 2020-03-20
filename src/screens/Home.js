@@ -5,6 +5,7 @@ import FBLoginButton from "../components/FBLoginButton";
 import { server } from "../config/common";
 import AsyncStorage from "@react-native-community/async-storage"
 import axios from "axios";
+import GoogleLoginButton from "../components/GoogleLoginButton";
 export default class HomeScreen extends React.Component {
 
     componentDidMount = async () => {

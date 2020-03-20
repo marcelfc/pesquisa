@@ -5,75 +5,21 @@ import {
     StyleSheet,
     TouchableWithoutFeedback,
 } from 'react-native'
-import { Container, Content, Text, Card, CardItem, Body, Button } from 'native-base'
+import { Container, Content, Text, Card, CardItem, Body, Button, Icon } from 'native-base'
 import FBLoginButton from '../components/FBLoginButton'
-import { LoginManager, AccessToken } from "react-native-fbsdk";
+import GoogleLoginButton from '../components/GoogleLoginButton'
+
 
 export default class ModalLogin extends Component {
 
     confirm = () => {
-        this.props.confirmCancel()
+        this.props.onCancel()
     }
-
-    initUser = async (token) => {
-
-        await fetch('https://graph.facebook.com/v2.5/me?fields=email,name&access_token=' + token)
-            .then((response) => response.json())
-            .then((json) => {
-                // Some user object has been set up somewhere, build that user here
-                console.log(json)
-                // user.name = json.name
-                // user.id = json.id
-                // user.user_friends = json.friends
-                // user.email = json.email
-                // user.username = json.name
-                // user.loading = false
-                // user.loggedIn = true
-            })
-            .catch(() => {
-                reject('ERROR GETTING DATA FROM FACEBOOK')
-            })
-
-    }
-
-    loginFacebook() {
-        LoginManager.logInWithPermissions(["public_profile", "email"]).then(
-            function (result) {
-                if (result.isCancelled) {
-                    console.log("Login cancelled");
-                } else {
-                    AccessToken.getCurrentAccessToken().then((data) => {
-                        const { accessToken } = data
-                            fetch('https://graph.facebook.com/v2.5/me?fields=email,name&access_token=' + accessToken)
-                            .then((response) => response.json())
-                            .then((json) => {
-                                // Some user object has been set up somewhere, build that user here
-                                console.log(json)
-                                // user.name = json.name
-                                // user.id = json.id
-                                // user.user_friends = json.friends
-                                // user.email = json.email
-                                // user.username = json.name
-                                // user.loading = false
-                                // user.loggedIn = true
-                            })
-                            .catch(() => {
-                                reject('ERROR GETTING DATA FROM FACEBOOK')
-                            })
-                    })
-                }
-            },
-            function (error) {
-                console.log("Login fail with error: " + error);
-            }
-        );
-    }
-
     render() {
         return (
             <Modal transparent={true} visible={this.props.isVisible}
                 onRequestClose={this.props.onCancel}
-                animationType='slide'>
+                animationType='slide' >
                 <TouchableWithoutFeedback
                     onPress={this.props.onCancel}>
                     <View style={styles.background}></View>
@@ -81,18 +27,15 @@ export default class ModalLogin extends Component {
                 <Container>
                     <Content>
                         <Card>
-                            <CardItem header>
-                                <Text>Realize o login para {this.props.textLogin}</Text>
+                            <CardItem header bordered>
+                                <Text style={{fontWeight: '700'}}>Realize o login para {this.props.textLogin}</Text>
+                                <Icon name='ios-close' onPress={this.props.onCancel} style={{color: 'red', marginLeft: 10}}/>
                             </CardItem>
                             <CardItem>
-                                <Body>
-                                    <Button onPress={() => this.loginFacebook()}>
-                                        <Text>facebook</Text>
-                                    </Button>
+                                <Body center>
+                                    <FBLoginButton confirmAction={this.confirm}></FBLoginButton>
+                                    <GoogleLoginButton confirmAction={this.confirm}></GoogleLoginButton>
                                 </Body>
-                            </CardItem>
-                            <CardItem footer>
-                                <Text>Botão de Cancelar</Text>
                             </CardItem>
                         </Card>
                     </Content>

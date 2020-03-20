@@ -2,30 +2,56 @@ import React from 'react'
 import { ScrollView, View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { DrawerItems } from 'react-navigation-drawer'
 import {
-    Container, Content, Text, Icon
+    Container, Content, Text, Icon, Button, Toast, Root
 } from "native-base";
 
 import bgImage from "../../assets/bg.png";
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default props => {
 
-    const logout = () => { }
+    const logout = () => {
+        try {
+            AsyncStorage.removeItem('userData')
+            Toast.show({
+                text: 'Logout realizado com sucesso',
+                buttonText: "Ok!",
+                type: "success",
+                duration: 8000
+            })
+        } catch (error) {
+            Toast.show({
+                text: 'Erro ao realizar logout',
+                buttonText: "Ok!",
+                type: "danger",
+                duration: 8000
+            })
+        }
+
+    }
 
     return (
-        <Container>
-            <Content padder>
-                <Image
-                    source={bgImage}
-                    style={{
-                        height: 120,
-                    }} />
-                <DrawerItems {...props} />
-                <View style={{ position: 'absolute', top: 50, left: 50, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-                    <Icon name="search" style={{color: 'white'}}/>
-                    <Text style={{color: 'white', fontSize: 22, fontStyle: 'italic', marginLeft: 10}}>Pesquisas</Text>
-                </View>
-            </Content>
-        </Container>
+        <Root>
+            <Container>
+                <Content padder>
+                    <Image
+                        source={bgImage}
+                        style={{
+                            height: 120,
+                        }} />
+                    <DrawerItems {...props} />
+                    <Button warning small onPress={logout} style={{ width: 150 }}>
+                        <Text>Logout</Text>
+                        <Icon name='ios-exit'></Icon>
+                    </Button>
+                    <View style={{ position: 'absolute', top: 50, left: 50, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+                        <Icon name="search" style={{ color: 'white' }} />
+                        <Text style={{ color: 'white', fontSize: 22, fontStyle: 'italic', marginLeft: 10 }}>Pesquisas</Text>
+                    </View>
+                </Content>
+            </Container>
+        </Root>
+
 
     )
 }
