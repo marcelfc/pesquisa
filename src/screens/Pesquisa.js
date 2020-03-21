@@ -106,7 +106,6 @@ export default class PesquisaScreen extends React.Component {
     }
 
     sendData = async (userData) => {
-        console.log(userData)
         await Axios.post(`${server}/pesquisas`, {
             titulo: this.state.titulo,
             categoria_id: this.state.categoria_id,
@@ -123,7 +122,7 @@ export default class PesquisaScreen extends React.Component {
                 duration: 8000
             })
 
-            console.log(res)
+            this.props.navigation.navigate("Confirmacao", {pesquisa: res.data, mensagem: 'Aeeeee! Seu pesquisa foi registrada com sucesso!'})
 
             // TODO -> encaminhar para tela de compartilhamento
         }).catch(error => {
@@ -138,8 +137,9 @@ export default class PesquisaScreen extends React.Component {
 
     }
 
-    onConfirmation = () => {
-        this.setState({ showModalLogin: false }, this.sendData)
+    onConfirmation = (userData) => {
+        this.setState({ showModalLogin: false })
+        this.sendData(userData)
     }
 
     isValid() {
@@ -159,7 +159,7 @@ export default class PesquisaScreen extends React.Component {
 
         if (this.state.items.length == 0) {
             const messagesError = this.state.messagesError
-            messagesError.push('Por favor, descreva itens para sua pesquisa.')
+            messagesError.push('Por favor, descreva opções para sua pesquisa.')
             this.setState({ messagesError })
             return false
         }
@@ -168,7 +168,14 @@ export default class PesquisaScreen extends React.Component {
 
         if (itemsBlank.length > 0) {
             const messagesError = this.state.messagesError
-            messagesError.push('Por favor, descreva todos os seus items')
+            messagesError.push('Por favor, descreva todas as suas opções.')
+            this.setState({ messagesError })
+            return false
+        }
+
+        if (this.state.items.length < 2) {
+            const messagesError = this.state.messagesError
+            messagesError.push('A pesquisa deve conter pelo menos duas opções.')
             this.setState({ messagesError })
             return false
         }

@@ -38,7 +38,7 @@ export default class VotoScreen extends React.Component {
                                     color: "#008000", fontSize: 22,
                                     textAlign: 'center',
                                     alignSelf: 'center'
-                                }}>Aeeeee! Seu voto foi registrado com sucesso! </Text>
+                                }}> {navigation.getParam('mensagem')} </Text>
                             </Body>
                         </CardItem>
                     </Card>

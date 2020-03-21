@@ -22,7 +22,7 @@ export default class ModalLogin extends Component {
             this.props.onCancel()
         } else {
             // sucesso login
-            this.props.onConfirmation()
+            this.props.onConfirmation(userData)
         }        
     }
     render() {

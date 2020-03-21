@@ -8,9 +8,18 @@ import axios from "axios";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 export default class HomeScreen extends React.Component {
 
+    state = {
+        lastFive: []
+    }
+
+    constructor(props) {
+        super(props)
+    }
+
     componentDidMount = async () => {
         try {
             await this.loadCategories()
+            await this.loadLastFive()
         } catch (error) {
             console.log(error)
         }
@@ -23,6 +32,38 @@ export default class HomeScreen extends React.Component {
         } catch (error) {
             console.log(error)
         }
+    }
+
+    loadLastFive = async () => {
+        try {
+            const res = await axios.get(`${server}/lastFive`)
+            this.setState({ lastFive: res.data })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    renderLastFive = () => {
+        const items = this.state.lastFive.map((item, index) => {
+            return (
+            <ListItem icon style={{ width: '100%' }} key={index} onPress={() => this.props.navigation.navigate("Voto", item)}>
+                <Left>
+                    <Button style={{ backgroundColor: "#0000CD" }}>
+                        <Icon active name="ios-paper" />
+                    </Button>
+                </Left>
+                <Body>
+                    <Text>{item.titulo}</Text>
+                </Body>
+                <Right>
+                    <Text>Votar</Text>
+                    <Icon active name="ios-open" />
+                </Right>
+            </ListItem>)
+        })
+
+        return items
+
     }
 
     render() {
@@ -120,76 +161,7 @@ export default class HomeScreen extends React.Component {
                         </CardItem>
                         <CardItem>
                             <Body>
-                                <ListItem icon style={{ width: '100%' }}>
-                                    <Left>
-                                        <Button style={{ backgroundColor: "#0000CD" }}>
-                                            <Icon active name="ios-paper" />
-                                        </Button>
-                                    </Left>
-                                    <Body>
-                                        <Text>pesquisa tal sobre tal coisa</Text>
-                                    </Body>
-                                    <Right>
-                                        <Text>Votar</Text>
-                                        <Icon active name="ios-open" />
-                                    </Right>
-                                </ListItem>
-                                <ListItem icon style={{ width: '100%' }}>
-                                    <Left>
-                                        <Button style={{ backgroundColor: "#0000CD" }}>
-                                            <Icon active name="ios-paper" />
-                                        </Button>
-                                    </Left>
-                                    <Body>
-                                        <Text>pesquisa tal sobre tal coisa</Text>
-                                    </Body>
-                                    <Right>
-                                        <Text>Votar</Text>
-                                        <Icon active name="ios-open" />
-                                    </Right>
-                                </ListItem>
-                                <ListItem icon style={{ width: '100%' }}>
-                                    <Left>
-                                        <Button style={{ backgroundColor: "#0000CD" }}>
-                                            <Icon active name="ios-paper" />
-                                        </Button>
-                                    </Left>
-                                    <Body>
-                                        <Text>pesquisa tal sobre tal coisa</Text>
-                                    </Body>
-                                    <Right>
-                                        <Text>Votar</Text>
-                                        <Icon active name="ios-open" />
-                                    </Right>
-                                </ListItem>
-                                <ListItem icon style={{ width: '100%' }}>
-                                    <Left>
-                                        <Button style={{ backgroundColor: "#0000CD" }}>
-                                            <Icon active name="ios-paper" />
-                                        </Button>
-                                    </Left>
-                                    <Body>
-                                        <Text>pesquisa tal sobre tal coisa</Text>
-                                    </Body>
-                                    <Right>
-                                        <Text>Votar</Text>
-                                        <Icon active name="ios-open" />
-                                    </Right>
-                                </ListItem>
-                                <ListItem icon style={{ width: '100%' }}>
-                                    <Left>
-                                        <Button style={{ backgroundColor: "#0000CD" }}>
-                                            <Icon active name="ios-paper" />
-                                        </Button>
-                                    </Left>
-                                    <Body>
-                                        <Text>pesquisa tal sobre tal coisa</Text>
-                                    </Body>
-                                    <Right>
-                                        <Text>Votar</Text>
-                                        <Icon active name="ios-open" />
-                                    </Right>
-                                </ListItem>
+                                {this.renderLastFive()}
                             </Body>
                         </CardItem>
                         <CardItem footer button bordered onPress={() => alert("This is Card Body")}>
