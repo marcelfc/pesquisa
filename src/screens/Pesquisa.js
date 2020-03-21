@@ -10,6 +10,8 @@ import {
 } from "native-base";
 import AsyncStorage from "@react-native-community/async-storage";
 import ModalLogin from "./ModalLogin";
+import Axios from "axios";
+import { server } from "../config/common";
 export default class PesquisaScreen extends React.Component {
 
     constructor(props) {
@@ -46,14 +48,14 @@ export default class PesquisaScreen extends React.Component {
 
     deleteOpcao(index) {
         const items = this.state.items.filter((item, key) => {
-            return index != key 
+            return index != key
         })
         this.setState({ items })
     }
 
     updateIsPublic() {
         const is_public = this.state.is_public
-        this.setState({is_public: !is_public})
+        this.setState({ is_public: !is_public })
     }
 
     renderItens() {
@@ -75,19 +77,19 @@ export default class PesquisaScreen extends React.Component {
     loadCategories = async () => {
         const stringCategories = await AsyncStorage.getItem('categories')
         const categories = JSON.parse(stringCategories) || []
-        this.setState({categories})
+        this.setState({ categories })
     }
 
     sendForm = async () => {
         // validar se todos os campos estão preenchidos
-        if(this.isValid()){
+        if (this.isValid()) {
             // verificar se usuário está logado
             const stringuserData = await AsyncStorage.getItem('userData')
             const userData = JSON.parse(stringuserData) || null
-            if(userData == null){
-                this.setState({showModalLogin: true})
+            if (userData == null) {
+                this.setState({ showModalLogin: true })
             } else {
-                await this.sendData()
+                await this.sendData(userData)
             }
         } else {
             const messages = this.state.messagesError.map(item => item)
@@ -96,46 +98,78 @@ export default class PesquisaScreen extends React.Component {
                 buttonText: "Ok!",
                 type: "danger",
                 duration: 8000
-              })
-              this.setState({messagesError: []})
+            })
+            this.setState({ messagesError: [] })
             return false
         }
-        
+
     }
 
-    sendData = async () => {
-        console.log(this.state)
-        alert('ok, enviar dados')
-    } 
+    sendData = async (userData) => {
+        console.log(userData)
+        await Axios.post(`${server}/pesquisas`, {
+            titulo: this.state.titulo,
+            categoria_id: this.state.categoria_id,
+            is_public: this.state.is_public,
+            items: this.state.items,
+            username: userData.username,
+            email: userData.email
+        }).then(res => {
+
+            Toast.show({
+                text: 'Pesquisa realizada com sucesso',
+                buttonText: "Ok!",
+                type: "success",
+                duration: 8000
+            })
+
+            console.log(res)
+
+            // TODO -> encaminhar para tela de compartilhamento
+        }).catch(error => {
+            console.log(error)
+            Toast.show({
+                text: 'Erro ao salvar pesquisa.',
+                buttonText: "Ok!",
+                type: "danger",
+                duration: 8000
+            })
+        })
+
+    }
+
+    onConfirmation = () => {
+        this.setState({ showModalLogin: false }, this.sendData)
+    }
 
     isValid() {
-        if(this.state.titulo.trim() == ''){
+        if (this.state.titulo.trim() == '') {
             const messagesError = this.state.messagesError
             messagesError.push('Por favor, descreva sua pesquisa.')
-            this.setState({messagesError})
+            this.setState({ messagesError })
             return false
         }
 
-        if(this.state.categoria_id == null){
+        if (this.state.categoria_id == null) {
             const messagesError = this.state.messagesError
             messagesError.push('Por favor, selecione uma categoria.')
-            this.setState({messagesError})
+            this.setState({ messagesError })
             return false
         }
 
-        if(this.state.items.length == 0){
+        if (this.state.items.length == 0) {
             const messagesError = this.state.messagesError
             messagesError.push('Por favor, descreva itens para sua pesquisa.')
-            this.setState({messagesError})
+            this.setState({ messagesError })
             return false
         }
 
         const itemsBlank = this.state.items.filter(item => item.descricao.trim() == '')
 
-        if(itemsBlank.length > 0){
+        if (itemsBlank.length > 0) {
             const messagesError = this.state.messagesError
             messagesError.push('Por favor, descreva todos os seus items')
-            this.setState({messagesError})
+            this.setState({ messagesError })
             return false
         }
 
@@ -148,6 +182,7 @@ export default class PesquisaScreen extends React.Component {
                 <ModalLogin
                     isVisible={this.state.showModalLogin}
                     onCancel={() => this.setState({ showModalLogin: false })}
+                    onConfirmation={this.onConfirmation}
                     textLogin="publicar sua pesquisa."
                 ></ModalLogin>
                 <Header>
@@ -178,7 +213,7 @@ export default class PesquisaScreen extends React.Component {
                         <CardItem>
 
                             <Form style={{ width: '100%' }}>
-                                <Textarea rowSpan={3} bordered placeholder="Vamos pesquisar o que ?" onChangeText={val => this.setState({titulo: val})}/>
+                                <Textarea rowSpan={3} bordered placeholder="Vamos pesquisar o que ?" onChangeText={val => this.setState({ titulo: val })} />
                                 <Item picker>
                                     <Picker
                                         mode="dropdown"
@@ -188,20 +223,20 @@ export default class PesquisaScreen extends React.Component {
                                         placeholderStyle={{ color: "#bfc6ea" }}
                                         placeholderIconColor="#007aff"
                                         selectedValue={this.state.categoria_id}
-                                        onValueChange={val => this.setState({categoria_id: val})}
+                                        onValueChange={val => this.setState({ categoria_id: val })}
                                     >
                                         <Picker.Item label="Qual será a categoria ?" value={null} />
                                         {
                                             this.state.categories.map((item, index) => {
                                                 return (
-                                                    <Picker.Item label={item.categoria} value={item.id} key={index}/>
+                                                    <Picker.Item label={item.categoria} value={item.id} key={index} />
                                                 )
                                             })
                                         }
                                     </Picker>
                                 </Item>
                                 <ListItem onPress={this.updateIsPublic.bind(this)}>
-                                    <CheckBox checked={this.state.is_public} onPress={this.updateIsPublic.bind(this)}/>
+                                    <CheckBox checked={this.state.is_public} onPress={this.updateIsPublic.bind(this)} />
                                     <Body>
                                         <Text>Pesquisa pública </Text>
                                     </Body>

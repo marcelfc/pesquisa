@@ -25,11 +25,26 @@ export default class GoogleLoginButton extends Component {
                     duration: 8000
                 })
             } else if (error.code === statusCodes.IN_PROGRESS) {
-                // operation (e.g. sign in) is in progress already
+                Toast.show({
+                    text: 'Erro ao realizar login',
+                    buttonText: "Ok!",
+                    type: "warning",
+                    duration: 8000
+                })
             } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-                // play services not available or outdated
+                Toast.show({
+                    text: 'Erro ao realizar login',
+                    buttonText: "Ok!",
+                    type: "warning",
+                    duration: 8000
+                })
             } else {
-                // some other error happened
+                Toast.show({
+                    text: 'Erro ao realizar login',
+                    buttonText: "Ok!",
+                    type: "warning",
+                    duration: 8000
+                })
             }
         }
     };

@@ -10,13 +10,12 @@ export default class FBLoginButton extends Component {
     }
 
     confirm = () => {
-        console.log('confirm')
-        this.props.confirmAction
+        this.props.confirmAction()
     }
 
     loginFacebook() {
         LoginManager.logInWithPermissions(["public_profile", "email"]).then(
-            function (result) {
+            result => {
                 if (result.isCancelled) {
                     Toast.show({
                         text: 'Login cancelado. Para concluir a ação, é necessário efetuar o login.',
@@ -31,10 +30,8 @@ export default class FBLoginButton extends Component {
                             .then((response) => response.json())
                             .then((data) => {
                                 try {
-                                    confirm
                                     const userData = { username: data.name, email: data.email }
                                     AsyncStorage.setItem('userData', JSON.stringify(userData))
-                                    
                                 } catch (error) {
                                     Toast.show({
                                         text: 'Falha ao realizar login',
@@ -49,9 +46,10 @@ export default class FBLoginButton extends Component {
                                 reject('ERROR GETTING DATA FROM FACEBOOK')
                             })
                     })
+                    .then(() => this.confirm())
                 }
             },
-            function (error) {
+            error => {
                 Toast.show({
                     text: 'Falha ao realizar login',
                     buttonText: "Ok!",
