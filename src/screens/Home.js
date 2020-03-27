@@ -9,7 +9,8 @@ import GoogleLoginButton from "../components/GoogleLoginButton";
 export default class HomeScreen extends React.Component {
 
     state = {
-        lastFive: []
+        lastFive: [],
+        topThree: []
     }
 
     constructor(props) {
@@ -20,6 +21,7 @@ export default class HomeScreen extends React.Component {
         try {
             await this.loadCategories()
             await this.loadLastFive()
+            await this.loadTopThree()
         } catch (error) {
             console.log(error)
         }
@@ -43,23 +45,55 @@ export default class HomeScreen extends React.Component {
         }
     }
 
+    loadTopThree = async () => {
+        try {
+            const res = await axios.get(`${server}/topThree`)
+            this.setState({ topThree: res.data })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     renderLastFive = () => {
         const items = this.state.lastFive.map((item, index) => {
             return (
-            <ListItem icon style={{ width: '100%' }} key={index} onPress={() => this.props.navigation.navigate("Voto", item)}>
-                <Left>
-                    <Button style={{ backgroundColor: "#0000CD" }}>
-                        <Icon active name="ios-paper" />
-                    </Button>
-                </Left>
-                <Body>
-                    <Text>{item.titulo}</Text>
-                </Body>
-                <Right>
-                    <Text>Votar</Text>
-                    <Icon active name="ios-open" />
-                </Right>
-            </ListItem>)
+                <ListItem icon style={{ width: '100%' }} key={index} onPress={() => this.props.navigation.navigate("Voto", item)}>
+                    <Left>
+                        <Button style={{ backgroundColor: "#0000CD" }}>
+                            <Icon active name="ios-paper" />
+                        </Button>
+                    </Left>
+                    <Body>
+                        <Text>{item.titulo}</Text>
+                    </Body>
+                    <Right>
+                        <Text>Votar</Text>
+                        <Icon active name="ios-open" />
+                    </Right>
+                </ListItem>)
+        })
+
+        return items
+
+    }
+
+    renderTopThree = () => {
+        const items = this.state.topThree.map((item, index) => {
+            return (
+                <ListItem icon style={{ width: '100%' }} key={index} onPress={() => this.props.navigation.navigate("Voto", item)}>
+                    <Left>
+                        <Badge primary>
+                            <Text>{index + 1}</Text>
+                        </Badge>
+                    </Left>
+                    <Body>
+                        <Text>{item.titulo}</Text>
+                    </Body>
+                    <Right>
+                        <Text>Votar</Text>
+                        <Icon active name="ios-open" />
+                    </Right>
+                </ListItem>)
         })
 
         return items
@@ -102,50 +136,7 @@ export default class HomeScreen extends React.Component {
                         </CardItem>
                         <CardItem>
                             <Body>
-                                <ListItem icon style={{ width: '100%' }}>
-                                    <Left>
-                                        <Badge primary>
-                                            <Text>1</Text>
-                                        </Badge>
-                                    </Left>
-                                    <Body>
-                                        <Text>pesquisa tal sobre tal coisa</Text>
-                                    </Body>
-                                    <Right>
-                                        <Text>Votar</Text>
-                                        <Icon active name="ios-open" />
-                                    </Right>
-                                </ListItem>
-                                <ListItem icon style={{ width: '100%' }} onPress={() => this.props.navigation.navigate("Voto", { pesquisa: 'Quem deve ser o prefeito de banabuiú ?', items: [{ id: 1, item: 'Edinho Nobre' }, { id: 2, item: 'Veridiano Sales' }] })}>
-                                    <Left>
-                                        <Badge primary>
-                                            <Text>2</Text>
-                                        </Badge>
-                                    </Left>
-                                    <Body>
-                                        <Text>pesquisa tal sobre tal coisa</Text>
-                                    </Body>
-                                    <Right>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Text>Votar</Text>
-                                            <Icon active name="ios-open" />
-                                        </View>
-                                    </Right>
-                                </ListItem>
-                                <ListItem icon style={{ width: '100%' }}>
-                                    <Left>
-                                        <Badge primary>
-                                            <Text>3</Text>
-                                        </Badge>
-                                    </Left>
-                                    <Body>
-                                        <Text>pesquisa tal sobre tal coisa</Text>
-                                    </Body>
-                                    <Right>
-                                        <Text>Votar</Text>
-                                        <Icon active name="ios-open" />
-                                    </Right>
-                                </ListItem>
+                                {this.renderTopThree()}
                             </Body>
                         </CardItem>
                         <CardItem footer button bordered onPress={() => alert("This is Card Body")}>

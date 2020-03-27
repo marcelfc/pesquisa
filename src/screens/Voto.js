@@ -28,6 +28,13 @@ export default class VotoScreen extends React.Component {
         this.setState({ selectedSearch: { titulo: navigation.getParam('titulo'), items: navigation.getParam('items'), pesquisa_id: navigation.getParam('id') } })
     }
 
+    componentDidUpdate = (prevProps) => {
+        if (prevProps.navigation != this.props.navigation) {
+            const { navigation } = this.props;
+            this.setState({ selectedSearch: { titulo: navigation.getParam('titulo'), items: navigation.getParam('items'), pesquisa_id: navigation.getParam('id') } })
+        }
+    }
+
     renderItems(items) {
         const options = items.map((item, key) => {
             return (
@@ -52,7 +59,7 @@ export default class VotoScreen extends React.Component {
 
     sendForm = async () => {
         // validando os campos
-        if(this.isValid()){
+        if (this.isValid()) {
             const stringuserData = await AsyncStorage.getItem('userData')
             const userData = JSON.parse(stringuserData) || null
             if (userData == null) {
@@ -80,7 +87,7 @@ export default class VotoScreen extends React.Component {
             username: userData.username,
             email: userData.email
         }).then(res => {
-            this.props.navigation.navigate("Confirmacao", {pesquisa: res.data, mensagem: 'Aeeeee! Seu voto foi registrado com sucesso!'})
+            this.props.navigation.navigate("Confirmacao", { pesquisa: res.data, mensagem: 'Aeeeee! Seu voto foi registrado com sucesso!' })
             // TODO -> encaminhar para tela de compartilhamento
         }).catch(error => {
             console.log(error)
